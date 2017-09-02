@@ -9,13 +9,20 @@ import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/data
 
 export class HomePage {
 
-	game: FirebaseObjectObservable<any>;
+	active: boolean;
 
 	constructor(
 		public db: AngularFireDatabase,
 		public navCtrl: NavController
 	) {
-		this.game = db.object('/game');
+		db.object('/game').subscribe(game => {
+			this.active = game.active === 'true' ? true : false;
+			return game;
+		});
 	}
 
+	toggle(toggle) {
+		//console.log(toggle);
+		this.db.object('/game').set({'active': toggle.checked === true ? 'true' : 'false'});
+	}
 }

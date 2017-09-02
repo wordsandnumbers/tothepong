@@ -1,12 +1,15 @@
 <!--<ion-header>
     <ion-navbar>
-        <button ion-button menuToggle>
+        <button ion-button icon menuToggle>
             <ion-icon name="menu"></ion-icon>
         </button>
     </ion-navbar>
 </ion-header>-->
 
-<ion-content padding text-center [style.background-color]="(game | async)?.active === 'true' ? 'green' : 'red'">
-    <!--<button ion-button secondary menuToggle>Toggle Menu</button>-->
-    <h1>Game <span [textContent]="(game | async)?.active === 'true' ? 'On!' : 'Off'"></span></h1>
+<ion-content padding [style.background-color]="active ? 'green' : 'red'">
+    <ion-list no-lines>
+        <ion-item style="background-color: inherit;">
+            <ion-toggle item-start color="secondary" [(ngModel)]="active" (ionChange)="toggle($event)"></ion-toggle>
+        </ion-item>
+    </ion-list>
 </ion-content>
