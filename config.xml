@@ -1,8 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Events</name>
-    <description>An app for managing your events.</description>
-    <author email="info@collegenet.com" href="http://corp.collegenet.com.com/">CollegeNET, Inc.</author>
+    <name>To The Pong</name>
+    <description>Ping pong for all!</description>
     <content src="index.html" />
     <access origin="*" />
     <allow-navigation href="http://ionic.local/*" />
