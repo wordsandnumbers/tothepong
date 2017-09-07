@@ -4,11 +4,11 @@ import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/databa
 import {Game} from '../../types/game';
 
 @Component({
-	selector: 'page-home',
-	templateUrl: 'home.html'
+	selector: 'page-game',
+	templateUrl: 'game.html'
 })
 
-export class HomePage {
+export class GamePage {
 
 	active: boolean;
 	games: FirebaseListObservable<any>;

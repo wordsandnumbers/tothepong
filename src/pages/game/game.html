@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header no-border >
     <ion-navbar>
         <ion-buttons end>
             <button ion-button icon-only (click)="newGame()">
@@ -12,7 +12,7 @@
     </ion-navbar>
 </ion-header>
 
-<ion-content padding [style.background-color]="active ? 'green' : '#aaa'">
+<ion-content padding [style.background-color]="active ? 'green' : 'red'">
     <!--<ion-list no-lines>
         <ion-item style="background-color: inherit;">
             <ion-toggle item-start color="secondary" [(ngModel)]="active" (ionChange)="toggle($event)"></ion-toggle>
