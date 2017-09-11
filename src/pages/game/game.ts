@@ -35,27 +35,27 @@ export class GamePage {
 		});
 	}
 
-	toggle(toggle) {
-		//console.log(toggle);
-		this.db.object('/game').set({'active': toggle.checked === true ? 'true' : 'false'});
-	}
-
 	newGame() {
 		let game = new Game(['Player 1', 'Player 2']);
-		console.log(game);
+		this.db.object('/game').set({'active': 'true'});
 		this.games.push(game);
 	}
 	
 	endGame() {
 		this.games.update(this.activeGame.$key, {endDate: new Date().toISOString()});
+		this.db.object('/game').set({'active': 'false'});
 	}
 	
-	addPoint() {
-		
+	addPoint(playerIndex) {
+		if (this.activeGame.score[playerIndex] < 11) {
+			this.activeGame.score[playerIndex]++;
+		} 
 	}
 	
-	subtractPoint() {
-		
+	subtractPoint(playerIndex) {
+		if (this.activeGame.score[playerIndex] > 0) {
+			this.activeGame.score[playerIndex]--;
+		}
 	}
 
 }

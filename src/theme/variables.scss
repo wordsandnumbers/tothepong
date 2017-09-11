@@ -28,8 +28,8 @@ $app-direction: ltr;
 // The "primary" color is the only required color in the map.
 
 $colors: (
-        primary: #345eb1,
-        secondary: #29a551,
+        primary: #caecff,
+        secondary: #b5ffb7,
         danger: #ffbcbe,
         light: #222,
         dark: #f4f4f4
@@ -98,5 +98,5 @@ $font-family-wp-base: "Montserrat";
 
 
 .ion-page {
-  border: .8em solid #fff;
+  border: 1.2em solid #fff;
 }
