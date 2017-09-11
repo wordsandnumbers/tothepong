@@ -30,7 +30,7 @@ $app-direction: ltr;
 $colors: (
         primary: #345eb1,
         secondary: #29a551,
-        danger: #bf7a67,
+        danger: #ffbcbe,
         light: #222,
         dark: #f4f4f4
 );
@@ -54,7 +54,7 @@ $colors: (
 // so that the above variables are used and Ionic's
 // default are overridden.
 
-@import "ionic.theme.default";
+@import "ionic.theme.dark";
 
 // Ionicons
 // --------------------------------------------------
@@ -95,3 +95,8 @@ $colors: (
 $font-family-md-base: "Montserrat";
 $font-family-ios-base: "Montserrat";
 $font-family-wp-base: "Montserrat";
+
+
+.ion-page {
+  border: .8em solid #fff;
+}

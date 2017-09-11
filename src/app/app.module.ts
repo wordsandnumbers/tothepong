@@ -14,6 +14,8 @@ import { AngularFireModule } from 'angularfire2';
 import { firebaseConfig } from '../environment';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 
+import { MomentModule } from 'angular2-moment';
+
 @NgModule({
 	declarations: [
 		MyApp,
@@ -25,8 +27,9 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
 		BrowserModule,
 		IonicModule.forRoot(MyApp),
 		AngularFireModule.initializeApp(firebaseConfig, 'to-the-pong'),
-		AngularFireDatabaseModule
-],
+		AngularFireDatabaseModule,
+		MomentModule
+	],
 	bootstrap: [IonicApp],
 	entryComponents: [
 		MyApp,

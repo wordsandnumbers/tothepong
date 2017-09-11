@@ -12,6 +12,7 @@ export class GamePage {
 
 	active: boolean;
 	games: FirebaseListObservable<any>;
+	activeGame: Game;
 
 	constructor(
 		public db: AngularFireDatabase,
@@ -22,7 +23,16 @@ export class GamePage {
 			return game;
 		});
 		
-		this.games = db.list('/games');
+		this.games = db.list('/games', {
+			query: {
+				limitToLast: 1
+			}
+		});
+			
+		this.games.subscribe(games => {
+			console.log(games);
+			this.activeGame = games[0];
+		});
 	}
 
 	toggle(toggle) {
@@ -36,8 +46,8 @@ export class GamePage {
 		this.games.push(game);
 	}
 	
-	delete(key) {
-		this.games.remove(key);
+	endGame() {
+		this.games.update(this.activeGame.$key, {endDate: new Date().toISOString()});
 	}
 	
 	addPoint() {

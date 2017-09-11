@@ -1,23 +1,44 @@
-<ion-header no-border>
+<ion-footer no-border>
     <ion-toolbar>
+        <ion-segment>
         <ion-buttons start>
-            <button ion-button icon-only (click)="newGame()">
+            <button ion-button clear icon-right (click)="newGame()" *ngIf="activeGame?.endDate">
+                New Game
                 <ion-icon name="add"></ion-icon>
             </button>
+            <button ion-button color="danger" icon-right (click)="endGame()" *ngIf="!activeGame?.endDate">
+                End Game
+                <ion-icon name="trash"></ion-icon>
+            </button>
         </ion-buttons>
+        </ion-segment>
         <ion-segment>
             <ion-toggle color="secondary" [(ngModel)]="active" (ionChange)="toggle($event)"></ion-toggle>
         </ion-segment>
     </ion-toolbar>
-</ion-header>
+</ion-footer>
 
-<ion-content padding [style.background-color]="active ? 'green' : 'red'">
+<ion-content text-center padding [style.background-color]="active ? '#268826' : '#777'">
+    <ion-grid *ngIf="activeGame">
+        <ion-row>
+            <ion-col text-center col-6><div class="player-score">{{activeGame.score[0]}}</div></ion-col>
+            <ion-col text-center col-6><div class="player-score">{{activeGame.score[1]}}</div></ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col text-center col-6><div class="player-name">{{activeGame.players[0]}}</div></ion-col>
+            <ion-col text-center col-6><div class="player-name">{{activeGame.players[1]}}</div></ion-col>
+        </ion-row>
+    </ion-grid>
+
+    <p bottom *ngIf="!activeGame?.endDate">Game started {{activeGame?.startDate | amTimeAgo}}</p>
+    <p *ngIf="activeGame?.endDate">Game ended {{activeGame?.endDate | amTimeAgo}}</p>
+    
     <!--<ion-list no-lines>
         <ion-item style="background-color: transparent;">
             <ion-toggle item-start color="secondary" [(ngModel)]="active" (ionChange)="toggle($event)"></ion-toggle>
         </ion-item>
     </ion-list>-->
-    <ion-list>
+    <!--<ion-list>
         <ion-item *ngFor="let game of games | async">
             <button ion-button item-start (click)="subtractPoint(0)">
                 <ion-icon name="remove"></ion-icon>
@@ -36,6 +57,6 @@
                 <ion-icon name="trash"></ion-icon>
             </button>
         </ion-item>
-    </ion-list>    
+    </ion-list>-->    
     <!--<div class="ping-pong-ball"><span>🍕</span></div>-->
 </ion-content>
