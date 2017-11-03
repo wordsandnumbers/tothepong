@@ -22,13 +22,13 @@ export class GamePage {
 			this.active = game.active === 'true' ? true : false;
 			return game;
 		});
-		
+
 		this.games = db.list('/games', {
 			query: {
 				limitToLast: 1
 			}
 		});
-			
+
 		this.games.subscribe(games => {
 			console.log(games);
 			this.activeGame = games[0];
@@ -40,22 +40,23 @@ export class GamePage {
 		this.db.object('/game').set({'active': 'true'});
 		this.games.push(game);
 	}
-	
+
 	endGame() {
 		this.games.update(this.activeGame.$key, {endDate: new Date().toISOString()});
 		this.db.object('/game').set({'active': 'false'});
 	}
-	
+
 	addPoint(playerIndex) {
-		if (this.activeGame.score[playerIndex] < 11) {
+		if (this.activeGame.score[playerIndex] < 11 && this.active) {
 			this.activeGame.score[playerIndex]++;
-		} 
-	}
-	
-	subtractPoint(playerIndex) {
-		if (this.activeGame.score[playerIndex] > 0) {
-			this.activeGame.score[playerIndex]--;
+			this.db.object(`/games/${this.activeGame.$key}`).set(this.activeGame);
 		}
 	}
 
+	subtractPoint(playerIndex) {
+		if (this.activeGame.score[playerIndex] > 0 && this.active) {
+			this.activeGame.score[playerIndex]--;
+			this.db.object(`/games/${this.activeGame.$key}`).set(this.activeGame);
+		}
+	}
 }
