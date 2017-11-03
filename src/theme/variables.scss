@@ -66,9 +66,9 @@ $colors: (
 // Fonts
 // --------------------------------------------------
 
-//@import "roboto";
-//@import "noto-sans";
-@font-face {
+@import "roboto";
+@import "noto-sans";
+/*@font-face {
   font-family: 'Montserrat';
   src: url('../assets/fonts/montserrat-light.woff2') format('woff2'),
   url('../assets/fonts/montserrat-light.woff') format('woff');
@@ -90,11 +90,11 @@ $colors: (
   url('../assets/fonts/montserrat-bold.woff') format('woff');
   font-weight: 700;
   font-style: bold;
-}
+}*/
 
-$font-family-md-base: "Montserrat";
-$font-family-ios-base: "Montserrat";
-$font-family-wp-base: "Montserrat";
+$font-family-md-base: "Roboto";
+$font-family-ios-base: "Roboto";
+$font-family-wp-base: "Roboto";
 
 
 .ion-page {
