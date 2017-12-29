@@ -15,14 +15,14 @@ export class HomePage {
 		public db: AngularFireDatabase,
 		public navCtrl: NavController
 	) {
-		db.object('/game').subscribe(game => {
-			this.active = game.active === 'true' ? true : false;
+		db.object('/tableStatus').subscribe(game => {
+			this.active = game.occupied === 'true' ? true : false;
 			return game;
 		});
 	}
 
 	toggle(toggle) {
 		//console.log(toggle);
-		this.db.object('/game').set({'active': toggle.checked === true ? 'true' : 'false'});
+		this.db.object('/tableStatus').set({'occupied': toggle.checked === true ? 'true' : 'false', 'ts': new Date().toISOString()});
 	}
 }
