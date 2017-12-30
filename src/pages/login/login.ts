@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase';
+import {GamePage} from "../game/game";
 //import * as firebaseui from 'firebaseui';
 
 @Component({
@@ -15,7 +16,10 @@ export class LoginPage {
 
 	ionViewDidLoad() {
 		console.log('ionViewDidLoad LoginPage')
-		this.afAuth.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+		this.afAuth.auth.signInWithEmailAndPassword('jsawyer@collegenet.com', 'jstn.024').then(response => {
+				this.navCtrl.setRoot(GamePage);
+			}
+		);
 
 		// The start method will wait until the DOM is loaded.
 		//this.uiProvider.ui.start('#firebaseui-auth-container', this.getUiConfig());
