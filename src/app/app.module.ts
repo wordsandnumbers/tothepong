@@ -6,6 +6,7 @@ import {MyApp} from './app.component';
 import {GamePage} from '../pages/game/game';
 import {HomePage} from '../pages/home/home';
 import {ListPage} from '../pages/list/list';
+import {LoginPage} from "../pages/login/login";
 
 import {StatusBar} from '@ionic-native/status-bar';
 import {SplashScreen} from '@ionic-native/splash-screen';
@@ -13,6 +14,7 @@ import {SplashScreen} from '@ionic-native/splash-screen';
 import { AngularFireModule } from 'angularfire2';
 import { firebaseConfig } from '../environment';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
+import { AngularFireAuth } from "angularfire2/auth";
 
 import { MomentModule } from 'angular2-moment';
 
@@ -21,7 +23,8 @@ import { MomentModule } from 'angular2-moment';
 		MyApp,
 		GamePage,
 		HomePage,
-		ListPage
+		ListPage,
+		LoginPage
 	],
 	imports: [
 		BrowserModule,
@@ -35,12 +38,14 @@ import { MomentModule } from 'angular2-moment';
 		MyApp,
 		GamePage,
 		HomePage,
-		ListPage
+		ListPage,
+		LoginPage
 	],
 	providers: [
 		StatusBar,
 		SplashScreen,
-		{provide: ErrorHandler, useClass: IonicErrorHandler}
+		{provide: ErrorHandler, useClass: IonicErrorHandler},
+		AngularFireAuth
 	]
 })
 export class AppModule {
