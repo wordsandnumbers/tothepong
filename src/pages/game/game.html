@@ -14,6 +14,12 @@
 </ion-footer>
 
 <ion-content text-center padding [style.background-color]="active ? '#268826' : '#777'">
+	<pre>
+		<button ion-button clear item-start (click)="connect()">
+        	<ion-icon name="bluetooth"></ion-icon>
+        </button>
+		Data: {{data | json}}
+	</pre>
     <ion-grid *ngIf="activeGame">
         <ion-row>
             <ion-col text-center col-6><div class="player-score">{{activeGame.score[0]}}</div></ion-col>
