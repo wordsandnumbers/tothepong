@@ -17,6 +17,7 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireAuth } from "angularfire2/auth";
 
 import { MomentModule } from 'angular2-moment';
+import {BLE} from "@ionic-native/ble";
 
 @NgModule({
 	declarations: [
@@ -45,7 +46,8 @@ import { MomentModule } from 'angular2-moment';
 		StatusBar,
 		SplashScreen,
 		{provide: ErrorHandler, useClass: IonicErrorHandler},
-		AngularFireAuth
+		AngularFireAuth,
+		BLE
 	]
 })
 export class AppModule {

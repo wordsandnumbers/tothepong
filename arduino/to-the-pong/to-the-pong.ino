@@ -129,25 +129,25 @@ void sendMessage(char message[]) {
 }
 
 void button1press() {
-  sendMessage("{\"button\":1, \"type\":\"SP\"}");
-}
+  sendMessage("{\"b\":1, \"type\":\"SP\"}");
+} 
 
 void button1doublePress() {
-  sendMessage("{\"button\":1, \"type\":\"DP\"}");
+  sendMessage("{\"b\":1, \"type\":\"DP\"}");
 }
 
 void button1longPress() {
-  sendMessage("{\"button\":1, \"type\":\"LP\"}");
+  sendMessage("{\"b\":1, \"type\":\"LP\"}");
 }
 
 void button2press() {
-  sendMessage("{\"button\":2, \"type\":\"SP\"}");
+  sendMessage("{\"b\":2, \"type\":\"SP\"}");
 }
 
 void button2doublePress() {
-  sendMessage("{\"button\":2, \"type\":\"DP\"}");
+  sendMessage("{\"b\":2, \"type\":\"DP\"}");
 }
 
 void button2longPress() {
-  sendMessage("{\"button\":2, \"type\":\"LP\"}");
+  sendMessage("{\"b\":2, \"type\":\"LP\"}");
 }
