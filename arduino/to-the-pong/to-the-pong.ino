@@ -1,7 +1,13 @@
 
 /* 
- *  This sketch is for the Bluefruit Feather 32u4
- *  
+ _____        _   _              ___                    _ 
+/__   \___   | |_| |__   ___    / _ \___  _ __   __ _  / \
+  / /\/ _ \  | __| '_ \ / _ \  / /_)/ _ \| '_ \ / _` |/  /
+ / / | (_) | | |_| | | |  __/ / ___/ (_) | | | | (_| /\_/ 
+ \/   \___/   \__|_| |_|\___| \/    \___/|_| |_|\__, \/   
+                                                |___/     
+ *  Bluetooth LE + HID Scanning = Ping Pong Fun
+ *  For Bluefruit Feather 32u4
  */
  
 #include <Arduino.h>
@@ -27,8 +33,8 @@ Adafruit_BluefruitLE_SPI ble(BLUEFRUIT_SPI_CS, BLUEFRUIT_SPI_IRQ, BLUEFRUIT_SPI_
 
 bool gameActive = false;
 int ledState = LOW;
-int buttonPin = A1;
-int button2Pin = A2;
+int buttonPin = A2;
+int button2Pin = A3;
 OneButton button1(buttonPin, true);
 OneButton button2(button2Pin, true);
 
@@ -36,6 +42,40 @@ OneButton button2(button2Pin, true);
 void error(const __FlashStringHelper*err) {
   Serial.println(err);
   while (1);
+}
+
+
+#define MAX_BITS 100                 // max number of bits 
+#define WEIGAND_WAIT_TIME  3000      // time to wait for another weigand pulse.  
+ 
+unsigned char databits[MAX_BITS];    // stores all of the data bits
+unsigned char bitCount;              // number of bits currently captured
+unsigned char flagDone;              // goes low when data is currently being captured
+unsigned int weigand_counter;        // countdown until we assume there are no more bits
+ 
+unsigned long facilityCode=0;        // decoded facility code
+unsigned long cardCode=0;            // decoded card code
+
+int LED_GREEN = 11;
+int LED_RED = 12;
+int BEEP_BEEP = 10;
+
+// interrupt that happens when INT0 goes low (0 bit)
+void ISR_INT0() {
+  //Serial.print("0");   // uncomment this line to display raw binary
+  bitCount++;
+  flagDone = 0;
+  weigand_counter = WEIGAND_WAIT_TIME;  
+ 
+}
+ 
+// interrupt that happens when INT1 goes low (1 bit)
+void ISR_INT1() {
+  //Serial.print("1");   // uncomment this line to display raw binary
+  databits[bitCount] = 1;
+  bitCount++;
+  flagDone = 0;
+  weigand_counter = WEIGAND_WAIT_TIME;  
 }
 
 void setup(void) {
@@ -48,12 +88,8 @@ void setup(void) {
     button2.attachClick(button2press);
     button2.attachDoubleClick(button2doublePress);
     button2.attachLongPressStart(button2longPress);
-
-    while (!Serial);  // required for Flora & Micro
-    delay(500);
-  
-    Serial.begin(115200);
-    Serial.println(F("Adafruit Bluefruit Command Mode Example"));
+ 
+    Serial.println(F("PING PONG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"));
     Serial.println(F("---------------------------------------"));
   
     /* Initialise the module */
@@ -80,17 +116,7 @@ void setup(void) {
     Serial.println("Requesting Bluefruit info:");
     /* Print Bluefruit information */
     ble.info();
-  
-    Serial.println(F("Please use Adafruit Bluefruit LE app to connect in UART mode"));
-    Serial.println(F("Then Enter characters to send to Bluefruit"));
-    Serial.println();
-  
     ble.verbose(false);  // debug info is a little annoying after this point!
-  
-    /* Wait for connection */
-    while (! ble.isConnected()) {
-        delay(500);
-    }
   
     // LED Activity command is only supported from 0.6.6
     if ( ble.isVersionAtLeast(MINIMUM_FIRMWARE_VERSION) )
@@ -101,25 +127,90 @@ void setup(void) {
       ble.sendCommandCheckOK("AT+HWModeLED=" MODE_LED_BEHAVIOUR);
       Serial.println(F("******************************"));
     }
+    
+    pinMode(LED_RED, OUTPUT);  
+    pinMode(LED_GREEN, OUTPUT);  
+    pinMode(BEEP_BEEP, OUTPUT);  
+    digitalWrite(LED_RED, HIGH); // High = Off
+    digitalWrite(BEEP_BEEP, HIGH); // High = off
+    digitalWrite(LED_GREEN, LOW);  // Low = On
+    pinMode(A0, INPUT);     // DATA0 (INT0)
+    pinMode(A1, INPUT);     // DATA1 (INT1)
+    
+    Serial.begin(9600);
+    Serial.println("RFID Readers");
+    
+    // binds the ISR functions to the falling edge of INTO and INT1
+    attachInterrupt(0, ISR_INT0, FALLING);  
+    attachInterrupt(1, ISR_INT1, FALLING);
+    
+    
+    weigand_counter = WEIGAND_WAIT_TIME;
+
 }
 
 void loop() {
     button1.tick();
     button2.tick();
 
-    // Check for user input
-    char inputs[BUFSIZE+1];
-    
-    // Check for incoming characters from Bluefruit
-    ble.println("AT+BLEUARTRX");
-    ble.readline();
-    if (strcmp(ble.buffer, "OK") == 0) {
-      // no data
-      return;
+    // This waits to make sure that there have been no more data pulses before processing data
+    if (!flagDone) {
+      if (--weigand_counter == 0)
+        flagDone = 1;  
     }
-    // Some data was found, its in the buffer
-    Serial.print(F("[Recv] ")); Serial.println(ble.buffer);
-    ble.waitForOK();
+    
+    // if we have bits and we the weigand counter went out
+    if (bitCount > 0 && flagDone) {
+      unsigned char i;
+      
+      Serial.print("Read ");
+      Serial.print(bitCount);
+      Serial.print(" bits. ");
+      
+      if (bitCount == 35) {
+        // 35 bit HID Corporate 1000 format
+        // facility code = bits 2 to 14
+        for (i=2; i<14; i++) {
+          facilityCode <<=1;
+          facilityCode |= databits[i];
+        }
+        
+        // card code = bits 15 to 34
+        for (i=14; i<34; i++) {
+          cardCode <<=1;
+          cardCode |= databits[i];
+        }
+        
+        printBits();
+        
+      } else if (bitCount == 26) {
+        // standard 26 bit format
+        // facility code = bits 2 to 9
+        for (i=1; i<9; i++) {
+          facilityCode <<=1;
+          facilityCode |= databits[i];
+        }
+        
+        // card code = bits 10 to 23
+        for (i=9; i<25; i++) {
+          cardCode <<=1;
+          cardCode |= databits[i];
+        }
+        
+        printBits();  
+      } else {
+        // you can add other formats if you want!
+        // Serial.println("Unable to decode."); 
+      }
+      
+      // cleanup and get ready for the next card
+      bitCount = 0;
+      facilityCode = 0;
+      cardCode = 0;
+      for (i=0; i<MAX_BITS; i++) {
+        databits[i] = 0;
+      }
+    }
 }
 
 void sendMessage(char message[]) {
@@ -129,25 +220,48 @@ void sendMessage(char message[]) {
 }
 
 void button1press() {
-  sendMessage("{\"b\":1, \"type\":\"SP\"}");
+  sendMessage("B1:SP");
 } 
 
 void button1doublePress() {
-  sendMessage("{\"b\":1, \"type\":\"DP\"}");
+  sendMessage("B1:DP");
 }
 
 void button1longPress() {
-  sendMessage("{\"b\":1, \"type\":\"LP\"}");
+  sendMessage("B1:LP");
 }
 
 void button2press() {
-  sendMessage("{\"b\":2, \"type\":\"SP\"}");
+  sendMessage("B2:SP");
 }
 
 void button2doublePress() {
-  sendMessage("{\"b\":2, \"type\":\"DP\"}");
+  sendMessage("B2:DP");
 }
 
 void button2longPress() {
-  sendMessage("{\"b\":2, \"type\":\"LP\"}");
+  sendMessage("B2:LP");
 }
+
+void printBits() {
+  Serial.print("FC = ");
+  Serial.print(facilityCode);
+  Serial.print(", CC = ");
+  Serial.println(cardCode);
+
+  char codeMessage[25];
+  sprintf(codeMessage, "HID:%lu:%lu", facilityCode, cardCode);
+  sendMessage(codeMessage);
+
+  // Now lets play with some LED's for fun:
+//  digitalWrite(LED_RED, LOW); // Red
+//  if(cardCode == 12345){
+//    // If this one "bad" card, turn off green
+//    // so it's just red. Otherwise you get orange-ish
+//    digitalWrite(LED_GREEN, HIGH); 
+//  }
+//  delay(500);
+//  digitalWrite(LED_RED, HIGH);  // Red Off
+//  digitalWrite(LED_GREEN, LOW);  // Green back on
+}
+
