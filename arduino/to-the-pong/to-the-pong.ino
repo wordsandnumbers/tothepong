@@ -200,7 +200,7 @@ void loop() {
         printBits();  
       } else {
         // you can add other formats if you want!
-        // Serial.println("Unable to decode."); 
+        Serial.println("Unable to decode."); 
       }
       
       // cleanup and get ready for the next card

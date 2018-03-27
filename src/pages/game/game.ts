@@ -1,8 +1,10 @@
-import {Component, NgZone} from '@angular/core';
-import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
+import {Component} from '@angular/core';
+import {AngularFireDatabase, FirebaseListObservable} from 'angularfire2/database';
 import {Game} from '../../types/game';
-import {BLE} from "@ionic-native/ble";
 import {AlertController} from "ionic-angular";
+import {BleControllerService} from "../../services/ble-controller.service";
+import {ControllerEventType} from "../../types/controller-event";
+import {Message} from "../../types/message";
 
 @Component({
 	selector: 'page-game',
@@ -15,15 +17,13 @@ export class GamePage {
 	games: FirebaseListObservable<any>;
 	activeGame: Game;
 	service: number;
-	peripheral: any;
-	data: any;
-	device: any;
+	bleConnected: boolean;
+	message: string;
 
 	constructor(
 		public db: AngularFireDatabase,
-		private ble: BLE,
-		private ngZone: NgZone,
-		private alertCtrl: AlertController
+		private controllerService: BleControllerService,
+		private alertCtrl: AlertController,
 	) {
 		db.object('/game').subscribe(game => {
 			this.active = game.active === 'true' ? true : false;
@@ -40,35 +40,41 @@ export class GamePage {
 			console.log(games);
 			this.activeGame = games[0];
 		});
-		this.ble.scan([], 5).subscribe(device => {
-			if (device.name === 'Adafruit Bluefruit LE') {
-				this.device = device;
+
+		this.controllerService.controllerEvents.subscribe(event => {
+			if (event) {
+				this.showAlert(event.value);
+				switch (event.type) {
+					case ControllerEventType.B1:
+
+						this.addPoint(0);
+						break;
+					case ControllerEventType.B2:
+						this.addPoint(1);
+						break;
+					case ControllerEventType.HID:
+						break;
+				}
+			}
+		});
+
+		this.controllerService.connected.subscribe(connected => {
+			this.bleConnected = connected;
+		});
+
+		this.controllerService.messages.subscribe((message: Message) => {
+			if (message) {
+				this.showAlert(message.content, message.subject);
 			}
 		});
 	}
 
 	connect() {
-		this.ble.connect(this.device.id).subscribe(peripheral => {
-			this.peripheral = peripheral;
-			this.ble.startNotification(this.peripheral.id, "6E400001-B5A3-F393-E0A9-E50E24DCCA9E", "6E400003-B5A3-F393-E0A9-E50E24DCCA9E").subscribe(
-				data => this.onButtonStateChange(data),
-				() => this.showAlert('Unexpected Error', "Couldn't subscribe to controller events.")
-			);
-		});
+		this.controllerService.reconnect();
 	}
 
-	onButtonStateChange(buffer:ArrayBuffer) {
-		var data = new Uint8Array(buffer);
-		console.log(data);
-
-		this.ngZone.run(() => {
-			this.data = String.fromCharCode.apply(null, data);
-			() => this.showAlert('Button', this.data);
-		});
-
-	}
-
-	showAlert(title, message) {
+	showAlert(message, title?) {
+		this.message = message;
 		let alert = this.alertCtrl.create({
 			title: title,
 			subTitle: message,

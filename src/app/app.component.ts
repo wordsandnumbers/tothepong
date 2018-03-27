@@ -44,7 +44,7 @@ export class MyApp implements AfterViewInit {
 	ngAfterViewInit() {
 			if (!this.afAuth.auth) {
 				// User is authenticated.
-				this.setRootPage('HomePage');
+				this.setRootPage(this.rootPage);
 			} else {
 				// User is not authenticated.
 				this.setRootPage(LoginPage);

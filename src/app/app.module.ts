@@ -18,6 +18,7 @@ import { AngularFireAuth } from "angularfire2/auth";
 
 import { MomentModule } from 'angular2-moment';
 import {BLE} from "@ionic-native/ble";
+import {BleControllerService} from "../services/ble-controller.service";
 
 @NgModule({
 	declarations: [
@@ -32,13 +33,12 @@ import {BLE} from "@ionic-native/ble";
 		IonicModule.forRoot(MyApp),
 		AngularFireModule.initializeApp(firebaseConfig, 'to-the-pong'),
 		AngularFireDatabaseModule,
-		MomentModule
+		MomentModule,
 	],
 	bootstrap: [IonicApp],
 	entryComponents: [
 		MyApp,
 		GamePage,
-		HomePage,
 		ListPage,
 		LoginPage
 	],
@@ -47,7 +47,8 @@ import {BLE} from "@ionic-native/ble";
 		SplashScreen,
 		{provide: ErrorHandler, useClass: IonicErrorHandler},
 		AngularFireAuth,
-		BLE
+		BLE,
+		BleControllerService,
 	]
 })
 export class AppModule {
