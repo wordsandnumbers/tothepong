@@ -1,24 +1,25 @@
-import {Component} from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {AngularFireDatabase, FirebaseListObservable} from 'angularfire2/database';
 import {Game} from '../../types/game';
 import {AlertController} from "ionic-angular";
 import {BleControllerService} from "../../services/ble-controller.service";
 import {ControllerEventType} from "../../types/controller-event";
 import {Message} from "../../types/message";
+import {Subscription} from "rxjs/Subscription";
 
 @Component({
 	selector: 'page-game',
 	templateUrl: 'game.html'
 })
 
-export class GamePage {
+export class GamePage implements OnDestroy {
 
 	active: boolean;
 	games: FirebaseListObservable<any>;
 	activeGame: Game;
 	service: number;
 	bleConnected: boolean;
-	message: string;
+	subscription: Subscription;
 
 	constructor(
 		public db: AngularFireDatabase,
@@ -41,7 +42,7 @@ export class GamePage {
 			this.activeGame = games[0];
 		});
 
-		this.controllerService.controllerEvents.subscribe(event => {
+		this.subscription = this.controllerService.controllerEvents.subscribe(event => {
 			if (event) {
 				this.showAlert(event.value);
 				switch (event.type) {
@@ -58,15 +59,15 @@ export class GamePage {
 			}
 		});
 
-		this.controllerService.connected.subscribe(connected => {
+		this.subscription.add(this.controllerService.connected.subscribe(connected => {
 			this.bleConnected = connected;
-		});
+		}));
 
-		this.controllerService.messages.subscribe((message: Message) => {
+		this.subscription.add(this.controllerService.messages.subscribe((message: Message) => {
 			if (message) {
 				this.showAlert(message.content, message.subject);
 			}
-		});
+		}));
 	}
 
 	connect() {
@@ -74,7 +75,6 @@ export class GamePage {
 	}
 
 	showAlert(message, title?) {
-		this.message = message;
 		let alert = this.alertCtrl.create({
 			title: title,
 			subTitle: message,
@@ -110,5 +110,9 @@ export class GamePage {
 
 	setScore() {
 		this.db.object(`/games/${this.activeGame.$key}`).set(this.activeGame);
+	}
+
+	ngOnDestroy() {
+		this.subscription.unsubscribe();
 	}
 }
