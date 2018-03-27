@@ -15,8 +15,6 @@ import { AngularFireAuth } from 'angularfire2/auth';
 export class MyApp implements AfterViewInit {
 	@ViewChild(Nav) nav: Nav;
 
-	rootPage: any = GamePage;
-
 	pages: Array<{title: string, component: any}>;
 
 	firstRun: Boolean = true;
@@ -44,7 +42,7 @@ export class MyApp implements AfterViewInit {
 	ngAfterViewInit() {
 			if (!this.afAuth.auth) {
 				// User is authenticated.
-				this.setRootPage(this.rootPage);
+				this.setRootPage(GamePage);
 			} else {
 				// User is not authenticated.
 				this.setRootPage(LoginPage);
