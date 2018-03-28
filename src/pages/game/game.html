@@ -14,7 +14,7 @@
 </ion-footer>
 
 <ion-content text-center padding [style.background-color]="active ? '#268826' : '#777'">
-	<button ion-button clear item-start (click)="connect()" [color]="connected ? 'default' : 'danger'">
+	<button ion-button clear item-start (click)="connect()" [disabled]="bleConnected" [color]="bleConnected ? 'default' : 'danger'">
 		<ion-icon name="bluetooth"></ion-icon>
 	</button>
     <ion-grid *ngIf="activeGame">

@@ -3,7 +3,7 @@ import {AngularFireDatabase, FirebaseListObservable} from 'angularfire2/database
 import {Game} from '../../types/game';
 import {AlertController} from "ionic-angular";
 import {BleControllerService} from "../../services/ble-controller.service";
-import {ControllerEventType} from "../../types/controller-event";
+import {ControllerEventType, ControllerEventValue} from "../../types/controller-event";
 import {Message} from "../../types/message";
 import {Subscription} from "rxjs/Subscription";
 
@@ -44,16 +44,29 @@ export class GamePage implements OnDestroy {
 
 		this.subscription = this.controllerService.controllerEvents.subscribe(event => {
 			if (event) {
-				this.showAlert(event.value);
 				switch (event.type) {
 					case ControllerEventType.B1:
-
-						this.addPoint(0);
+						switch (event.value) {
+							case ControllerEventValue.LP:
+								this.subtractPoint(0);
+								break;
+							case ControllerEventValue.DP:
+							case ControllerEventValue.SP:
+								this.addPoint(0);
+						}
 						break;
 					case ControllerEventType.B2:
-						this.addPoint(1);
+						switch (event.value) {
+							case ControllerEventValue.LP:
+								this.subtractPoint(1);
+								break;
+							case ControllerEventValue.DP:
+							case ControllerEventValue.SP:
+								this.addPoint(1);
+						}
 						break;
 					case ControllerEventType.HID:
+						this.showAlert(event.value, 'HID');
 						break;
 				}
 			}

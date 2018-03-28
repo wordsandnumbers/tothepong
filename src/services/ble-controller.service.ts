@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {BLE} from "@ionic-native/ble";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Observable} from "rxjs/Observable";
-import {ControllerEvent, ControllerEventType} from "../types/controller-event";
+import {ControllerEvent, ControllerEventType, ControllerEventValue} from "../types/controller-event";
 import {Message} from "../types/message";
 
 @Injectable()
@@ -36,15 +36,17 @@ export class BleControllerService {
 						(data: ArrayBuffer) => {
 							let dataString: string = String.fromCharCode.apply(null, new Uint8Array(data));
 							let arr: string[] = dataString.split(':');
-							this._controllerEvents.next(Object.assign({}, new ControllerEvent(ControllerEventType[arr[0]], 'stuff')));
+							let value: ControllerEventValue = arr[0] === 'HID' ? arr[2] : ControllerEventValue[arr[1]];
+							var event = new ControllerEvent(ControllerEventType[arr[0]], value);
+							this._controllerEvents.next(Object.assign({}, event));
 						},
 						() => {
-							return "Disconnected from controller.";
+							this._messages.next(new Message("There was a problem talking to the controller.", "Bluetooth Trubs"));
 						}
 					);
 				}, () => {
 					this._connected.next(false);
-					return "Couldn't connect to controller.";
+					this._messages.next(new Message("Disconnected from controller.", "Bluetooth Trubs"));
 				});
 			}
 		});
@@ -54,6 +56,7 @@ export class BleControllerService {
 				() => {
 					if (!this.device) {
 						this._messages.next(new Message("Couldn't find the controller. Is it close enough and turned on?", "Bluetooth Trubs"));
+						this._controllerEvents.next(Object.assign({}, new ControllerEvent(ControllerEventType.HID, '12345')));
 					}
 				},
 				() => {
