@@ -5,6 +5,8 @@ import {Observable} from "rxjs/Observable";
 import {ControllerEvent, ControllerEventType, ControllerEventValue} from "../types/controller-event";
 import {Message} from "../types/message";
 
+const BLE_ERROR_MESSAGE: string = "Bluetooth Trubs";
+
 @Injectable()
 export class BleControllerService {
 
@@ -41,12 +43,12 @@ export class BleControllerService {
 							this._controllerEvents.next(Object.assign({}, event));
 						},
 						() => {
-							this._messages.next(new Message("There was a problem talking to the controller.", "Bluetooth Trubs"));
+							this._messages.next(new Message("There was a problem talking to the controller.", BLE_ERROR_MESSAGE));
 						}
 					);
 				}, () => {
 					this._connected.next(false);
-					this._messages.next(new Message("Disconnected from controller.", "Bluetooth Trubs"));
+					this._messages.next(new Message("Disconnected from controller.", BLE_ERROR_MESSAGE));
 				});
 			}
 		});
@@ -55,8 +57,7 @@ export class BleControllerService {
 			this.ble.stopScan().then(
 				() => {
 					if (!this.device) {
-						this._messages.next(new Message("Couldn't find the controller. Is it close enough and turned on?", "Bluetooth Trubs"));
-						this._controllerEvents.next(Object.assign({}, new ControllerEvent(ControllerEventType.HID, '12345')));
+						this._messages.next(new Message("Couldn't find the controller. Is it in range and turned on?", BLE_ERROR_MESSAGE));
 					}
 				},
 				() => {
