@@ -57,7 +57,7 @@ export class BleControllerService {
 			this.ble.stopScan().then(
 				() => {
 					if (!this.device) {
-						this._messages.next(new Message("Couldn't find the controller. Is it in range and turned on?", BLE_ERROR_MESSAGE));
+						this._messages.next(new Message("Couldn't find the controller. Make sure it's in range and turned on.", BLE_ERROR_MESSAGE));
 					}
 				},
 				() => {
