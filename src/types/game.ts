@@ -1,21 +1,30 @@
+import {User} from "./user";
+
 export enum GameState {
 	NEW,
 	ACTIVE,
 	COMPLETE,
-	CANCELED,
+	CANCELLED,
 	ARCHIVED
+}
+
+class Score {
+	user: User;
+	points: number;
+	timeStamp: Date;
 }
 
 export class Game {
 	startDate: string;
 	endDate: string;
-	players: string[];
-	score: number[];
-	sensorId: string;
+	players: Array<User>;
+	score: Array<number>;
+	location: string;
+	scores: Array<Score>;
 	state: GameState;
 	$key: string;
-	
-	constructor(players: string[]) {
+
+	constructor(players: Array<User>) {
 		this.players = players;
 		this.startDate = new Date().toISOString();
 		this.score = [0,0];

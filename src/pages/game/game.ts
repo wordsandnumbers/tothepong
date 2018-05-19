@@ -6,6 +6,7 @@ import {BleControllerService} from "../../services/ble-controller.service";
 import {ControllerEventType, ControllerEventValue} from "../../types/controller-event";
 import {Message} from "../../types/message";
 import {Subscription} from "rxjs/Subscription";
+import {HidUserService} from "../../services/hid-user.service";
 
 @Component({
 	selector: 'page-game',
@@ -25,6 +26,7 @@ export class GamePage implements OnDestroy {
 		public db: AngularFireDatabase,
 		private controllerService: BleControllerService,
 		private alertCtrl: AlertController,
+		private userService: HidUserService,
 	) {
 		db.object('/game').subscribe(game => {
 			this.active = game.active === 'true' ? true : false;
@@ -67,6 +69,7 @@ export class GamePage implements OnDestroy {
 						break;
 					case ControllerEventType.HID:
 						this.showAlert(event.value, 'HID');
+						this.userService.getUserByHidId(event.value as string);
 						break;
 				}
 			}
@@ -97,7 +100,7 @@ export class GamePage implements OnDestroy {
 	}
 
 	newGame() {
-		let game = new Game(['Player 1', 'Player 2']);
+		let game = new Game([{displayName: 'Player 1'}, {displayName: 'Player 2'}]);
 		this.db.object('/game').set({'active': 'true'});
 		this.games.push(game);
 	}

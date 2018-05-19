@@ -1,6 +1,8 @@
 import {Game} from "./game";
+import {Team} from "./team";
 
 export class Match {
-	games: Game[];
+	teams: Array<Team>;
+	games: Array<Game>;
 	totalGames: number;
 }
