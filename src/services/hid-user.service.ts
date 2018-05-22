@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {User} from "../types/user";
 import {AngularFireDatabase, FirebaseListObservable} from "angularfire2/database";
+import Thenable = firebase.Thenable;
 
 const FIREBASE_USER_PATH: string = "/users";
 
@@ -17,19 +18,19 @@ export class HidUserService {
 	public getUserByHidId(hidId: string): FirebaseListObservable<User[]> {
 		return this.db.list(FIREBASE_USER_PATH, {
 			query: {
-				equalTo: {
-					hidId: hidId
-				}
+				orderByChild: 'hidId',
+				equalTo: hidId,
+				limitToFirst: 1,
 			}
 		});
 	}
 
-	public addUser(user: User) {
-
+	public addUser(user: User): Thenable<User> {
+		return this.users.push(user);
 	}
 
-	public updateUser(user: User) {
-
+	public updateUser(user: User): firebase.Promise<void> {
+		return this.users.update(user.$key, user);
 	}
 
 }

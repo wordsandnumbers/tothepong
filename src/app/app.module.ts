@@ -19,13 +19,15 @@ import { MomentModule } from 'angular2-moment';
 import {BLE} from "@ionic-native/ble";
 import {BleControllerService} from "../services/ble-controller.service";
 import {HidUserService} from "../services/hid-user.service";
+import {UserModalPage} from "../pages/user-modal/user-modal";
 
 @NgModule({
 	declarations: [
 		MyApp,
 		GamePage,
 		ListPage,
-		LoginPage
+		LoginPage,
+		UserModalPage,
 	],
 	imports: [
 		BrowserModule,
@@ -39,7 +41,8 @@ import {HidUserService} from "../services/hid-user.service";
 		MyApp,
 		GamePage,
 		ListPage,
-		LoginPage
+		LoginPage,
+		UserModalPage,
 	],
 	providers: [
 		StatusBar,

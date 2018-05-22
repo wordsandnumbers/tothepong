@@ -20,7 +20,7 @@ export class Game {
 	players: Array<User>;
 	score: Array<number>;
 	location: string;
-	scores: Array<Score>;
+	pointScores: Array<Score>;
 	state: GameState;
 	$key: string;
 

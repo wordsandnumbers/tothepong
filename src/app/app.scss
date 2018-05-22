@@ -42,3 +42,8 @@ h1 {
 .toolbar {
   background-color: green;
 }
+
+/* fix for https://github.com/ionic-team/ionic/issues/5536 */
+.input-cover {
+	position: static;
+}

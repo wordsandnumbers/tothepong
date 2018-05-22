@@ -1,12 +1,14 @@
 import {Component, OnDestroy} from '@angular/core';
 import {AngularFireDatabase, FirebaseListObservable} from 'angularfire2/database';
 import {Game} from '../../types/game';
-import {AlertController} from "ionic-angular";
+import {AlertController, ModalController} from "ionic-angular";
 import {BleControllerService} from "../../services/ble-controller.service";
 import {ControllerEventType, ControllerEventValue} from "../../types/controller-event";
 import {Message} from "../../types/message";
 import {Subscription} from "rxjs/Subscription";
 import {HidUserService} from "../../services/hid-user.service";
+import {UserModalMode, UserModalPage} from "../user-modal/user-modal";
+import {User} from "../../types/user";
 
 @Component({
 	selector: 'page-game',
@@ -27,6 +29,7 @@ export class GamePage implements OnDestroy {
 		private controllerService: BleControllerService,
 		private alertCtrl: AlertController,
 		private userService: HidUserService,
+		private modalCtrl: ModalController,
 	) {
 		db.object('/game').subscribe(game => {
 			this.active = game.active === 'true' ? true : false;
@@ -68,8 +71,8 @@ export class GamePage implements OnDestroy {
 						}
 						break;
 					case ControllerEventType.HID:
-						this.showAlert(event.value, 'HID');
-						this.userService.getUserByHidId(event.value as string);
+						//this.showAlert(event.value, 'HID');
+						this.handleHidScan(event.value as string);
 						break;
 				}
 			}
@@ -84,6 +87,24 @@ export class GamePage implements OnDestroy {
 				this.showAlert(message.content, message.subject);
 			}
 		}));
+
+		this.handleHidScan("12444");
+	}
+
+	private handleHidScan(hidId: string) {
+		this.userService.getUserByHidId(hidId as string).subscribe((users: User[]) => {
+			if (users.length === 0) {
+				this.modalCtrl.create(UserModalPage, {
+					user: new User(hidId as string, "Player"),
+					mode: UserModalMode.CREATE
+				}).present();
+			} else {
+				this.modalCtrl.create(UserModalPage, {
+					user: users[0],
+					mode: UserModalMode.UPDATE
+				}).present();
+			}
+		});
 	}
 
 	connect() {
