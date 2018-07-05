@@ -28,7 +28,22 @@ h1 {
   background: #fff;
   border-color: #eee;
   border-radius: 50%;
-  padding: 1em;
-  box-shadow: inset -0.8em -0.8em 4em -1.5em #888;
+  padding: 0;
+  box-shadow: inset -0.8em -0.8em 4em -1.5em #666;
   color: #888888;
+  height: 1.5em;
+  width: 1.5em;
+  text-align: center;
+  font-size: 4em;
+  padding-top: .2em;
+  display: inline-block;
+}
+
+.toolbar {
+  background-color: green;
+}
+
+/* fix for https://github.com/ionic-team/ionic/issues/5536 */
+.input-cover {
+	position: static;
 }

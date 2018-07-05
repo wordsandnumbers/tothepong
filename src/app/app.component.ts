@@ -1,27 +1,30 @@
-import {Component, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ViewChild} from '@angular/core';
 import {Nav, Platform} from 'ionic-angular';
 import {StatusBar} from '@ionic-native/status-bar';
 import {SplashScreen} from '@ionic-native/splash-screen';
 
-import {HomePage} from '../pages/home/home';
+import {GamePage} from '../pages/game/game';
 import {ListPage} from '../pages/list/list';
+import {LoginPage} from "../pages/login/login";
+
+import { AngularFireAuth } from 'angularfire2/auth';
 
 @Component({
 	templateUrl: 'app.html'
 })
-export class MyApp {
+export class MyApp implements AfterViewInit {
 	@ViewChild(Nav) nav: Nav;
-
-	rootPage: any = HomePage;
 
 	pages: Array<{title: string, component: any}>;
 
-	constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen) {
+	firstRun: Boolean = true;
+
+	constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public afAuth: AngularFireAuth) {
 		this.initializeApp();
 
 		// used for an example of ngFor and navigation
 		this.pages = [
-			{title: 'Home', component: HomePage},
+			{title: 'Game', component: GamePage},
 			{title: 'List', component: ListPage}
 		];
 
@@ -35,6 +38,37 @@ export class MyApp {
 			this.splashScreen.hide();
 		});
 	}
+
+	ngAfterViewInit() {
+			if (!this.afAuth.auth) {
+				// User is authenticated.
+				this.setRootPage(GamePage);
+			} else {
+				// User is not authenticated.
+				this.setRootPage(LoginPage);
+			}
+	}
+
+	setRootPage(page) {
+
+		if (this.firstRun) {
+
+			// if its the first run we also have to hide the splash screen
+			this.nav.setRoot(page)
+				.then(() => this.platform.ready())
+				.then(() => {
+
+					// Okay, so the platform is ready and our plugins are available.
+					// Here you can do any higher level native things you might need.
+					this.statusBar.styleDefault();
+					this.splashScreen.hide();
+					this.firstRun = false;
+				});
+		} else {
+			this.nav.setRoot(page);
+		}
+	}
+
 
 	openPage(page) {
 		// Reset the content nav to have just this page

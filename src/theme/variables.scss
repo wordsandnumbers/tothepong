@@ -28,9 +28,9 @@ $app-direction: ltr;
 // The "primary" color is the only required color in the map.
 
 $colors: (
-        primary: #345eb1,
-        secondary: #29a551,
-        danger: #bf7a67,
+        primary: #caecff,
+        secondary: #b5ffb7,
+        danger: #ffbcbe,
         light: #222,
         dark: #f4f4f4
 );
@@ -54,7 +54,7 @@ $colors: (
 // so that the above variables are used and Ionic's
 // default are overridden.
 
-@import "ionic.theme.default";
+@import "ionic.theme.dark";
 
 // Ionicons
 // --------------------------------------------------
@@ -66,9 +66,9 @@ $colors: (
 // Fonts
 // --------------------------------------------------
 
-//@import "roboto";
-//@import "noto-sans";
-@font-face {
+@import "roboto";
+@import "noto-sans";
+/*@font-face {
   font-family: 'Montserrat';
   src: url('../assets/fonts/montserrat-light.woff2') format('woff2'),
   url('../assets/fonts/montserrat-light.woff') format('woff');
@@ -90,8 +90,13 @@ $colors: (
   url('../assets/fonts/montserrat-bold.woff') format('woff');
   font-weight: 700;
   font-style: bold;
-}
+}*/
 
-$font-family-md-base: "Montserrat";
-$font-family-ios-base: "Montserrat";
-$font-family-wp-base: "Montserrat";
+$font-family-md-base: "Roboto";
+$font-family-ios-base: "Roboto";
+$font-family-wp-base: "Roboto";
+
+
+.ion-page {
+  border: 1.2em solid #fff;
+}

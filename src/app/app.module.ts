@@ -3,8 +3,9 @@ import {ErrorHandler, NgModule} from '@angular/core';
 import {IonicApp, IonicErrorHandler, IonicModule} from 'ionic-angular';
 
 import {MyApp} from './app.component';
-import {HomePage} from '../pages/home/home';
+import {GamePage} from '../pages/game/game';
 import {ListPage} from '../pages/list/list';
+import {LoginPage} from "../pages/login/login";
 
 import {StatusBar} from '@ionic-native/status-bar';
 import {SplashScreen} from '@ionic-native/splash-screen';
@@ -12,29 +13,45 @@ import {SplashScreen} from '@ionic-native/splash-screen';
 import { AngularFireModule } from 'angularfire2';
 import { firebaseConfig } from '../environment';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
+import { AngularFireAuth } from "angularfire2/auth";
+
+import { MomentModule } from 'angular2-moment';
+import {BLE} from "@ionic-native/ble";
+import {BleControllerService} from "../services/ble-controller.service";
+import {HidUserService} from "../services/hid-user.service";
+import {UserModalPage} from "../pages/user-modal/user-modal";
 
 @NgModule({
 	declarations: [
 		MyApp,
-		HomePage,
-		ListPage
+		GamePage,
+		ListPage,
+		LoginPage,
+		UserModalPage,
 	],
 	imports: [
 		BrowserModule,
 		IonicModule.forRoot(MyApp),
 		AngularFireModule.initializeApp(firebaseConfig, 'to-the-pong'),
-		AngularFireDatabaseModule
-],
+		AngularFireDatabaseModule,
+		MomentModule,
+	],
 	bootstrap: [IonicApp],
 	entryComponents: [
 		MyApp,
-		HomePage,
-		ListPage
+		GamePage,
+		ListPage,
+		LoginPage,
+		UserModalPage,
 	],
 	providers: [
 		StatusBar,
 		SplashScreen,
-		{provide: ErrorHandler, useClass: IonicErrorHandler}
+		{provide: ErrorHandler, useClass: IonicErrorHandler},
+		AngularFireAuth,
+		BLE,
+		BleControllerService,
+		HidUserService,
 	]
 })
 export class AppModule {
