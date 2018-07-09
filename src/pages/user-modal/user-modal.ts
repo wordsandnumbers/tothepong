@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component} from '@angular/core';
 import {NavController, NavParams, ViewController} from "ionic-angular";
 import {HidUserService} from "../../services/hid-user.service";
 import {User} from "../../types/user";
@@ -40,11 +40,11 @@ export class UserModalPage {
 		let updatedUser = Object.assign(this.user, this.userForm.value);
 		if (this.mode === UserModalMode.CREATE) {
 			this.userService.addUser(updatedUser).then((user: User) => {
-				this.viewCtrl.dismiss();
+				this.dismiss();
 			});
 		} else {
 			this.userService.updateUser(updatedUser).then(() => {
-				this.viewCtrl.dismiss();
+				this.dismiss();
 			});
 		}
 	}

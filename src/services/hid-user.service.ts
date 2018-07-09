@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {User} from "../types/user";
 import {AngularFireDatabase, FirebaseListObservable} from "angularfire2/database";
 import Thenable = firebase.Thenable;
+import {Observable} from "rxjs/Observable";
 
 const FIREBASE_USER_PATH: string = "/users";
 
@@ -15,7 +16,7 @@ export class HidUserService {
 		this.users = db.list(FIREBASE_USER_PATH);
 	}
 
-	public getUserByHidId(hidId: string): FirebaseListObservable<User[]> {
+	public getUserByHidId(hidId: string): Observable<User[]> {
 		return this.db.list(FIREBASE_USER_PATH, {
 			query: {
 				orderByChild: 'hidId',

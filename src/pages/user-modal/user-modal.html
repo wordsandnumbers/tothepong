@@ -10,7 +10,6 @@
 	</ion-toolbar>
 </ion-header>
 
-
 <ion-content padding>
 	<form [formGroup]="userForm">
 		<ion-list>
@@ -18,8 +17,6 @@
 				<ion-input formControlName="displayName" type="text" placeholder="Name"></ion-input>
 			</ion-item>
 		</ion-list>
-		<button ion-button full (click)="save()">
-			<span ion-text color="primary">OK</span>
-		</button>
+		<button ion-button full (click)="save()">OK</button>
 	</form>
 </ion-content>

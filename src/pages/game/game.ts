@@ -1,4 +1,4 @@
-import {Component, OnDestroy} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AngularFireDatabase, FirebaseListObservable} from 'angularfire2/database';
 import {Game} from '../../types/game';
 import {AlertController, ModalController} from "ionic-angular";
@@ -9,13 +9,14 @@ import {Subscription} from "rxjs/Subscription";
 import {HidUserService} from "../../services/hid-user.service";
 import {UserModalMode, UserModalPage} from "../user-modal/user-modal";
 import {User} from "../../types/user";
+import 'rxjs/add/operator/first';
 
 @Component({
 	selector: 'page-game',
 	templateUrl: 'game.html'
 })
 
-export class GamePage implements OnDestroy {
+export class GamePage implements OnDestroy, OnInit {
 
 	active: boolean;
 	games: FirebaseListObservable<any>;
@@ -88,17 +89,21 @@ export class GamePage implements OnDestroy {
 			}
 		}));
 
+	}
+
+	public ngOnInit() {
 		this.handleHidScan("12444");
 	}
 
 	private handleHidScan(hidId: string) {
-		this.userService.getUserByHidId(hidId as string).subscribe((users: User[]) => {
+		this.userService.getUserByHidId(hidId as string).first().subscribe((users: User[]) => {
 			if (users.length === 0) {
 				this.modalCtrl.create(UserModalPage, {
 					user: new User(hidId as string, "Player"),
 					mode: UserModalMode.CREATE
 				}).present();
 			} else {
+				//this.activeGame.players[0] = users[0];
 				this.modalCtrl.create(UserModalPage, {
 					user: users[0],
 					mode: UserModalMode.UPDATE

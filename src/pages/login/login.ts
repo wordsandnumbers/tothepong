@@ -24,7 +24,9 @@ export class LoginPage {
 		this.afAuth.auth.signInWithEmailAndPassword('jsawyer@collegenet.com', 'jstn.024').then(response => {
 				this.navCtrl.setRoot(GamePage);
 			}
-		);
+		).catch((error: Error) => {
+			alert(error.message);
+		});
 
 		// The start method will wait until the DOM is loaded.
 		//this.uiProvider.ui.start('#firebaseui-auth-container', this.getUiConfig());

@@ -43,8 +43,13 @@
             </ion-col>
         </ion-row>
         <ion-row>
-            <ion-col text-center col-6><div class="player-name">{{activeGame.players[0].displayName}}</div></ion-col>
-            <ion-col text-center col-6><div class="player-name">{{activeGame.players[1].displayName}}</div></ion-col>
+            <ion-col text-center col-6 *ngFor="let player of activeGame.players">
+				<div class="player-name">{{player.displayName}}
+					<button ion-button clear item-start (click)="handleHidScan(player.hidId)">
+						<ion-icon name="create"></ion-icon>
+					</button>
+				</div>
+			</ion-col>
         </ion-row>
         <ion-row>
             <ion-col text-center>
