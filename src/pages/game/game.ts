@@ -44,7 +44,6 @@ export class GamePage implements OnDestroy, OnInit {
 		});
 
 		this.games.subscribe(games => {
-			console.log(games);
 			this.activeGame = games[0];
 		});
 
@@ -103,7 +102,7 @@ export class GamePage implements OnDestroy, OnInit {
 					mode: UserModalMode.CREATE
 				}).present();
 			} else {
-				//this.activeGame.players[0] = users[0];
+				this.activeGame.players[0] = users[0];
 				this.modalCtrl.create(UserModalPage, {
 					user: users[0],
 					mode: UserModalMode.UPDATE

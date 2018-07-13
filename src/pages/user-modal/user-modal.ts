@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {NavController, NavParams, ViewController} from "ionic-angular";
 import {HidUserService} from "../../services/hid-user.service";
 import {User} from "../../types/user";
-import {FormControl, FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 
 export enum UserModalMode {
 	CREATE,
@@ -15,9 +15,7 @@ export enum UserModalMode {
 })
 export class UserModalPage {
 	user: User;
-	userForm: FormGroup = new FormGroup({
-		displayName: new FormControl()
-	});
+	userForm: FormGroup;
 	mode: UserModalMode;
 	UserModalMode = UserModalMode;
 
@@ -26,10 +24,13 @@ export class UserModalPage {
 		public navParams: NavParams,
 		public viewCtrl: ViewController,
 		private userService: HidUserService,
+		private fb: FormBuilder,
 	) {
 		this.user = navParams.data.user || new User();
 		this.mode = this.navParams.data.mode || UserModalMode.CREATE;
-		this.userForm.patchValue(this.user);
+		this.userForm = this.fb.group({
+			displayName: [this.user.displayName, Validators.required]
+		});
 	}
 
 	public dismiss() {
@@ -37,15 +38,17 @@ export class UserModalPage {
 	}
 
 	public save() {
-		let updatedUser = Object.assign(this.user, this.userForm.value);
-		if (this.mode === UserModalMode.CREATE) {
-			this.userService.addUser(updatedUser).then((user: User) => {
-				this.dismiss();
-			});
-		} else {
-			this.userService.updateUser(updatedUser).then(() => {
-				this.dismiss();
-			});
+		if (this.userForm.valid) {
+			let updatedUser = Object.assign(this.user, this.userForm.value);
+			if (this.mode === UserModalMode.CREATE) {
+				this.userService.addUser(updatedUser).then((user: User) => {
+					this.dismiss();
+				});
+			} else {
+				this.userService.updateUser(updatedUser).then(() => {
+					this.dismiss();
+				});
+			}
 		}
 	}
 }
