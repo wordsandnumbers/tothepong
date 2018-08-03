@@ -71,7 +71,7 @@ export class GamePage implements OnDestroy, OnInit {
 						}
 						break;
 					case ControllerEventType.HID:
-						//this.showAlert(event.value, 'HID');
+						this.showAlert(event.value, 'HID');
 						this.handleHidScan(event.value as string);
 						break;
 				}
@@ -95,6 +95,7 @@ export class GamePage implements OnDestroy, OnInit {
 	}
 
 	private handleHidScan(hidId: string) {
+		// If users already logged in, and game is active, don't do anything.
 		this.userService.getUserByHidId(hidId as string).first().subscribe((users: User[]) => {
 			if (users.length === 0) {
 				this.modalCtrl.create(UserModalPage, {
