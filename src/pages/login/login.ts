@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {NavController, NavParams} from 'ionic-angular';
 import {AngularFireAuth} from 'angularfire2/auth';
 import {GamePage} from "../game/game";
-import {HidUserService} from "../../services/hid-user.service";
+import {UserService} from "../../services/user.service";
 
 //import * as firebaseui from 'firebaseui';
 
@@ -16,7 +16,7 @@ export class LoginPage {
 		public navCtrl: NavController,
 		public navParams: NavParams,
 		public afAuth: AngularFireAuth,
-		public userService: HidUserService,
+		public userService: UserService,
 	) {}
 
 	ionViewDidLoad() {

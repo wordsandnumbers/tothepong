@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {NavController, NavParams, ViewController} from "ionic-angular";
-import {HidUserService} from "../../services/hid-user.service";
+import {UserService} from "../../services/user.service";
 import {User} from "../../types/user";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 
@@ -23,7 +23,7 @@ export class UserModalPage {
 		public navCtrl: NavController,
 		public navParams: NavParams,
 		public viewCtrl: ViewController,
-		private userService: HidUserService,
+		private userService: UserService,
 		private fb: FormBuilder,
 	) {
 		this.user = navParams.data.user || new User();

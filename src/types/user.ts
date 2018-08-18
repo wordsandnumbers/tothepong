@@ -1,12 +1,16 @@
+import {Match} from "./match";
+
 export class User {
-	hidId?: string;
+	cardId?: string;
+	$uid?: string;
 	displayName: string;
 	photoURL?: string;
 	firebaseUid?: string;
+	matches?: Array<Match>;
 	$key?: string;
 
-	constructor(hidId?: string, displayName?: string) {
-		this.hidId = hidId;
+	constructor(cardId?: string, displayName?: string) {
+		this.cardId = cardId;
 		this.displayName = displayName;
 	}
 }

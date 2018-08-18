@@ -19,7 +19,8 @@
 	</button>
     <ion-grid *ngIf="activeGame">
         <ion-row>
-            <ion-col text-center col-6><div class="player-score">{{activeGame.score[0]}}</div></ion-col>
+			<pre>{{activeTeams | json}}</pre>
+			<ion-col text-center col-6><div class="player-score">{{activeGame.score[0]}}</div></ion-col>
             <ion-col text-center col-6><div class="player-score">{{activeGame.score[1]}}</div></ion-col>
         </ion-row>
         <ion-row>
@@ -43,9 +44,9 @@
             </ion-col>
         </ion-row>
         <ion-row>
-            <ion-col text-center col-6 *ngFor="let player of activeGame.players">
-				<div class="player-name">{{player.displayName}}
-					<button ion-button clear item-start (click)="handleHidScan(player.hidId)">
+            <ion-col text-center col-6 *ngFor="let team of activeTeams">
+				<div class="player-name">{{team.players[0].displayName}}
+					<button ion-button clear item-start (click)="editPlayer(team.players[0])">
 						<ion-icon name="create"></ion-icon>
 					</button>
 				</div>

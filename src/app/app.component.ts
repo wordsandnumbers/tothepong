@@ -2,11 +2,8 @@ import {AfterViewInit, Component, ViewChild} from '@angular/core';
 import {Nav, Platform} from 'ionic-angular';
 import {StatusBar} from '@ionic-native/status-bar';
 import {SplashScreen} from '@ionic-native/splash-screen';
-
 import {GamePage} from '../pages/game/game';
-import {ListPage} from '../pages/list/list';
 import {LoginPage} from "../pages/login/login";
-
 import { AngularFireAuth } from 'angularfire2/auth';
 
 @Component({
@@ -21,13 +18,6 @@ export class MyApp implements AfterViewInit {
 
 	constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public afAuth: AngularFireAuth) {
 		this.initializeApp();
-
-		// used for an example of ngFor and navigation
-		this.pages = [
-			{title: 'Game', component: GamePage},
-			{title: 'List', component: ListPage}
-		];
-
 	}
 
 	initializeApp() {
@@ -68,7 +58,6 @@ export class MyApp implements AfterViewInit {
 			this.nav.setRoot(page);
 		}
 	}
-
 
 	openPage(page) {
 		// Reset the content nav to have just this page

@@ -6,10 +6,12 @@ import {BleControllerService} from "../../services/ble-controller.service";
 import {ControllerEventType, ControllerEventValue} from "../../types/controller-event";
 import {Message} from "../../types/message";
 import {Subscription} from "rxjs/Subscription";
-import {HidUserService} from "../../services/hid-user.service";
 import {UserModalMode, UserModalPage} from "../user-modal/user-modal";
 import {User} from "../../types/user";
 import 'rxjs/add/operator/first';
+import {UserService} from "../../services/user.service";
+import {Match} from "../../types/match";
+import {Team} from "../../types/team";
 
 @Component({
 	selector: 'page-game',
@@ -24,12 +26,13 @@ export class GamePage implements OnDestroy, OnInit {
 	service: number;
 	bleConnected: boolean;
 	subscription: Subscription;
+	activeTeams: Array<Team> = [];
 
 	constructor(
 		public db: AngularFireDatabase,
 		private controllerService: BleControllerService,
 		private alertCtrl: AlertController,
-		private userService: HidUserService,
+		private userService: UserService,
 		private modalCtrl: ModalController,
 	) {
 		db.object('/game').subscribe(game => {
@@ -92,28 +95,38 @@ export class GamePage implements OnDestroy, OnInit {
 
 	public ngOnInit() {
 		this.handleHidScan("12444");
+		this.handleHidScan("11111");
 	}
 
-	private handleHidScan(hidId: string) {
+	private handleHidScan(cardId: string) {
 		// If users already logged in, and game is active, don't do anything.
-		this.userService.getUserByHidId(hidId as string).first().subscribe((users: User[]) => {
-			if (users.length === 0) {
-				this.modalCtrl.create(UserModalPage, {
-					user: new User(hidId as string, "Player"),
-					mode: UserModalMode.CREATE
-				}).present();
-			} else {
-				this.activeGame.players[0] = users[0];
-				this.modalCtrl.create(UserModalPage, {
-					user: users[0],
-					mode: UserModalMode.UPDATE
-				}).present();
-			}
-		});
+		if (this.activeTeams.length < 2) {
+			this.userService.getUserByHidId(cardId as string).first().subscribe((users: User[]) => {
+				if (users.length === 0) {
+					this.modalCtrl.create(UserModalPage, {
+						user: new User(cardId as string, "Player"),
+						mode: UserModalMode.CREATE
+					}).present();
+				} else {
+					let team = new Team();
+					team.players.push(users[0]);
+					this.activeGame.players[0] = users[0];
+					this.activeTeams.push(team);
+				}
+			});
+		}
+
 	}
 
 	connect() {
 		this.controllerService.reconnect();
+	}
+
+	editPlayer(user: User) {
+		this.modalCtrl.create(UserModalPage, {
+			user: user,
+			mode: UserModalMode.UPDATE
+		}).present();
 	}
 
 	showAlert(message, title?) {
@@ -123,6 +136,11 @@ export class GamePage implements OnDestroy, OnInit {
 			buttons: ['OK']
 		});
 		alert.present();
+	}
+
+	newMatch() {
+		let match = new Match();
+		match.teams = this.activeTeams;
 	}
 
 	newGame() {

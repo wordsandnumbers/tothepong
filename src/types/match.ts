@@ -5,4 +5,5 @@ export class Match {
 	teams: Array<Team>;
 	games: Array<Game>;
 	totalGames: number;
+	$key?: number;
 }

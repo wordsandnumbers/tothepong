@@ -4,7 +4,6 @@ import {IonicApp, IonicErrorHandler, IonicModule} from 'ionic-angular';
 
 import {MyApp} from './app.component';
 import {GamePage} from '../pages/game/game';
-import {ListPage} from '../pages/list/list';
 import {LoginPage} from "../pages/login/login";
 
 import {StatusBar} from '@ionic-native/status-bar';
@@ -18,14 +17,13 @@ import { AngularFireAuth } from "angularfire2/auth";
 import { MomentModule } from 'angular2-moment';
 import {BLE} from "@ionic-native/ble";
 import {BleControllerService} from "../services/ble-controller.service";
-import {HidUserService} from "../services/hid-user.service";
+import {UserService} from "../services/user.service";
 import {UserModalPage} from "../pages/user-modal/user-modal";
 
 @NgModule({
 	declarations: [
 		MyApp,
 		GamePage,
-		ListPage,
 		LoginPage,
 		UserModalPage,
 	],
@@ -40,7 +38,6 @@ import {UserModalPage} from "../pages/user-modal/user-modal";
 	entryComponents: [
 		MyApp,
 		GamePage,
-		ListPage,
 		LoginPage,
 		UserModalPage,
 	],
@@ -51,7 +48,7 @@ import {UserModalPage} from "../pages/user-modal/user-modal";
 		AngularFireAuth,
 		BLE,
 		BleControllerService,
-		HidUserService,
+		UserService,
 	]
 })
 export class AppModule {
