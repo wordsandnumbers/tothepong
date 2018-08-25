@@ -52,7 +52,7 @@
     },
     "devDependencies": {
         "@ionic/app-scripts": "2.0.2",
-        "typescript": "2.3.4"
+        "typescript": "^2.4.0"
     },
     "description": "Table Tennis!",
     "cordova": {

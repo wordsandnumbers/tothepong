@@ -10,7 +10,7 @@ import {UserModalMode, UserModalPage} from "../user-modal/user-modal";
 import {User} from "../../types/user";
 import 'rxjs/add/operator/first';
 import {UserService} from "../../services/user.service";
-import {Match} from "../../types/match";
+import {Match, MatchState} from "../../types/match";
 import {Team} from "../../types/team";
 
 @Component({
@@ -23,6 +23,7 @@ export class GamePage implements OnDestroy, OnInit {
 	active: boolean;
 	games: FirebaseListObservable<any>;
 	activeGame: Game;
+	activeMatch: Match;
 	service: number;
 	bleConnected: boolean;
 	subscription: Subscription;
@@ -95,7 +96,7 @@ export class GamePage implements OnDestroy, OnInit {
 
 	public ngOnInit() {
 		this.handleHidScan("12444");
-		this.handleHidScan("11111");
+		this.handleHidScan("22222");
 	}
 
 	private handleHidScan(cardId: string) {
@@ -112,10 +113,14 @@ export class GamePage implements OnDestroy, OnInit {
 					team.players.push(users[0]);
 					this.activeGame.players[0] = users[0];
 					this.activeTeams.push(team);
+					if (this.activeTeams.length === 2) {
+						this.newMatch();
+					}
 				}
 			});
+		} else {
+			//TODO: end match / start new match dialog?
 		}
-
 	}
 
 	connect() {
@@ -139,8 +144,12 @@ export class GamePage implements OnDestroy, OnInit {
 	}
 
 	newMatch() {
-		let match = new Match();
-		match.teams = this.activeTeams;
+		this.activeMatch = new Match(3, this.activeTeams);
+		this.userService.newMatch(this.activeTeams[0].players[0], this.activeMatch);
+	}
+
+	endMatch(match: Match) {
+		this.activeMatch.state = MatchState.COMPLETE;
 	}
 
 	newGame() {

@@ -19,7 +19,8 @@
 	</button>
     <ion-grid *ngIf="activeGame">
         <ion-row>
-			<pre>{{activeTeams | json}}</pre>
+			<pre>teams: {{activeTeams | json}}</pre>
+			<pre>match: {{activeMatch | json}}</pre>
 			<ion-col text-center col-6><div class="player-score">{{activeGame.score[0]}}</div></ion-col>
             <ion-col text-center col-6><div class="player-score">{{activeGame.score[1]}}</div></ion-col>
         </ion-row>
@@ -59,30 +60,4 @@
             </ion-col>
         </ion-row>
     </ion-grid>
-    <!--<ion-list no-lines>
-        <ion-item style="background-color: transparent;">
-            <ion-toggle item-start color="secondary" [(ngModel)]="active" (ionChange)="toggle($event)"></ion-toggle>
-        </ion-item>
-    </ion-list>-->
-    <!--<ion-list>
-        <ion-item *ngFor="let game of games | async">
-            <button ion-button item-start (click)="subtractPoint(0)">
-                <ion-icon name="remove"></ion-icon>
-            </button>
-            <button ion-button item-start (click)="addPoint(0)">
-                <ion-icon name="add"></ion-icon>
-            </button>
-            <button ion-button item-start (click)="subtractPoint(1)">
-                <ion-icon name="remove"></ion-icon>
-            </button>
-            <button ion-button item-start (click)="addPoint(1)">
-                <ion-icon name="add"></ion-icon>
-            </button>
-            <ion-label>{{game.players[0] + ': ' + game.score[0] + ' - ' + game.players[1] + ': ' + game.score[1]}}</ion-label>
-            <button ion-button item-end (click)="delete(game.$key)">
-                <ion-icon name="trash"></ion-icon>
-            </button>
-        </ion-item>
-    </ion-list>-->
-    <!--<div class="ping-pong-ball"><span>🍕</span></div>-->
 </ion-content>
