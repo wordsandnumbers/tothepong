@@ -19,6 +19,8 @@ import {BLE} from "@ionic-native/ble";
 import {BleControllerService} from "../services/ble-controller.service";
 import {UserService} from "../services/user.service";
 import {UserModalPage} from "../pages/user-modal/user-modal";
+import {MatchService} from "../services/match.service";
+import {DebugGameModal} from "../pages/game/debug-game-modal";
 
 @NgModule({
 	declarations: [
@@ -26,6 +28,7 @@ import {UserModalPage} from "../pages/user-modal/user-modal";
 		GamePage,
 		LoginPage,
 		UserModalPage,
+		DebugGameModal,
 	],
 	imports: [
 		BrowserModule,
@@ -40,6 +43,7 @@ import {UserModalPage} from "../pages/user-modal/user-modal";
 		GamePage,
 		LoginPage,
 		UserModalPage,
+		DebugGameModal,
 	],
 	providers: [
 		StatusBar,
@@ -48,6 +52,7 @@ import {UserModalPage} from "../pages/user-modal/user-modal";
 		AngularFireAuth,
 		BLE,
 		BleControllerService,
+		MatchService,
 		UserService,
 	]
 })

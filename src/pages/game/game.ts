@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {AngularFireDatabase, FirebaseListObservable} from 'angularfire2/database';
-import {Game} from '../../types/game';
+import {AngularFireDatabase} from 'angularfire2/database';
+//import {Game} from '../../types/game';
 import {AlertController, ModalController} from "ionic-angular";
 import {BleControllerService} from "../../services/ble-controller.service";
 import {ControllerEventType, ControllerEventValue} from "../../types/controller-event";
@@ -12,6 +12,8 @@ import 'rxjs/add/operator/first';
 import {UserService} from "../../services/user.service";
 import {Match, MatchState} from "../../types/match";
 import {Team} from "../../types/team";
+import {MatchService} from "../../services/match.service";
+import {DebugGameModal} from "./debug-game-modal";
 
 @Component({
 	selector: 'page-game',
@@ -21,8 +23,6 @@ import {Team} from "../../types/team";
 export class GamePage implements OnDestroy, OnInit {
 
 	active: boolean;
-	games: FirebaseListObservable<any>;
-	activeGame: Game;
 	activeMatch: Match;
 	service: number;
 	bleConnected: boolean;
@@ -33,6 +33,7 @@ export class GamePage implements OnDestroy, OnInit {
 		public db: AngularFireDatabase,
 		private controllerService: BleControllerService,
 		private alertCtrl: AlertController,
+		private matchService: MatchService,
 		private userService: UserService,
 		private modalCtrl: ModalController,
 	) {
@@ -41,37 +42,27 @@ export class GamePage implements OnDestroy, OnInit {
 			return game;
 		});
 
-		this.games = db.list('/games', {
-			query: {
-				limitToLast: 1
-			}
-		});
-
-		this.games.subscribe(games => {
-			this.activeGame = games[0];
-		});
-
 		this.subscription = this.controllerService.controllerEvents.subscribe(event => {
 			if (event) {
 				switch (event.type) {
 					case ControllerEventType.B1:
 						switch (event.value) {
 							case ControllerEventValue.LP:
-								this.subtractPoint(0);
+								this.subtractScore(this.activeMatch.teams[0]);
 								break;
 							case ControllerEventValue.DP:
 							case ControllerEventValue.SP:
-								this.addPoint(0);
+								this.addScore(this.activeMatch.teams[1]);
 						}
 						break;
 					case ControllerEventType.B2:
 						switch (event.value) {
 							case ControllerEventValue.LP:
-								this.subtractPoint(1);
+								this.subtractScore(this.activeMatch.teams[0]);
 								break;
 							case ControllerEventValue.DP:
 							case ControllerEventValue.SP:
-								this.addPoint(1);
+								this.addScore(this.activeMatch.teams[1]);
 						}
 						break;
 					case ControllerEventType.HID:
@@ -96,22 +87,22 @@ export class GamePage implements OnDestroy, OnInit {
 
 	public ngOnInit() {
 		this.handleHidScan("12444");
-		this.handleHidScan("22222");
+		this.handleHidScan("44444");
 	}
 
 	private handleHidScan(cardId: string) {
 		// If users already logged in, and game is active, don't do anything.
 		if (this.activeTeams.length < 2) {
-			this.userService.getUserByHidId(cardId as string).first().subscribe((users: User[]) => {
-				if (users.length === 0) {
+			this.userService.getUserByHidId(cardId as string).first().subscribe((user: User) => {
+				if (!user) {
 					this.modalCtrl.create(UserModalPage, {
 						user: new User(cardId as string, "Player"),
 						mode: UserModalMode.CREATE
 					}).present();
 				} else {
 					let team = new Team();
-					team.players.push(users[0]);
-					this.activeGame.players[0] = users[0];
+					team.players.push(user);
+					//this.activeGame.players[0] = user;
 					this.activeTeams.push(team);
 					if (this.activeTeams.length === 2) {
 						this.newMatch();
@@ -145,7 +136,7 @@ export class GamePage implements OnDestroy, OnInit {
 
 	newMatch() {
 		this.activeMatch = new Match(3, this.activeTeams);
-		this.userService.newMatch(this.activeTeams[0].players[0], this.activeMatch);
+		this.matchService.newMatch(this.activeTeams[0].players[0], this.activeMatch);
 	}
 
 	endMatch(match: Match) {
@@ -153,32 +144,31 @@ export class GamePage implements OnDestroy, OnInit {
 	}
 
 	newGame() {
-		let game = new Game([{displayName: 'Player 1'}, {displayName: 'Player 2'}]);
-		this.db.object('/game').set({'active': 'true'});
-		this.games.push(game);
+		// TODO: add new game to match
 	}
 
 	endGame() {
-		this.games.update(this.activeGame.$key, {endDate: new Date().toISOString()});
-		this.db.object('/game').set({'active': 'false'});
+		/*this.games.update(this.activeGame.$key, {endDate: new Date().toISOString()});
+		this.db.object('/game').set({'active': 'false'});*/
 	}
 
-	addPoint(playerIndex) {
-		if (this.activeGame.score[playerIndex] < 11 && this.active) {
-			this.activeGame.score[playerIndex]++;
-			this.setScore();
-		}
+	addScore(team: Team) {
+		this.activeMatch.addScore(team);
 	}
 
-	subtractPoint(playerIndex) {
-		if (this.activeGame.score[playerIndex] > 0 && this.active) {
-			this.activeGame.score[playerIndex]--;
-			this.setScore();
-		}
+	subtractScore(team: Team) {
+		this.activeMatch.subtractScore(team);
 	}
 
 	setScore() {
-		this.db.object(`/games/${this.activeGame.$key}`).set(this.activeGame);
+		//this.db.object(`/games/${this.activeGame.$key}`).set(this.activeGame);
+	}
+
+	debugModal() {
+		this.modalCtrl.create(DebugGameModal, {
+			teams: this.activeTeams,
+			match: this.activeMatch
+		}).present();
 	}
 
 	ngOnDestroy() {

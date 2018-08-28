@@ -1,5 +1,4 @@
-import {User} from "./user";
-import {Team} from "./team";
+import {PointScore} from "./point-score";
 
 export enum GameState {
 	NEW,
@@ -9,34 +8,27 @@ export enum GameState {
 	ARCHIVED
 }
 
-class Score {
-	user: User;
-	team: Team;
-	points: number;
-	timeStamp: Date;
-}
-
 export class Game {
 	startDate: string;
 	endDate: string;
-	players: Array<User>;
-	score: Array<number>;
-	location: string;
-	pointScores: Array<Score>;
+	pointScores: Array<PointScore>;
 	totalPoints: number;
 	state: GameState;
-	$key: string;
 
-	standings(): any {
-		return this.pointScores.reduce((totals, pointScore: Score) => {
-			return totals[pointScore.team.id] += pointScore.points;
+	get standings(): any {
+		let standings = this.pointScores.reduce((totals, pointScore: PointScore) => {
+			if (!totals[pointScore.team.id]) {
+				totals[pointScore.team.id] = 0;
+			}
+			totals[pointScore.team.id] += pointScore.points;
+			return totals;
 		}, {});
+		return standings;
 	}
 
-	constructor(players: Array<User>) {
-		this.players = players;
+	constructor() {
 		this.startDate = new Date().toISOString();
-		this.score = [0,0];
+		this.pointScores = [];
 		this.state = GameState.NEW;
 	}
 }

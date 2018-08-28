@@ -14,38 +14,31 @@
 </ion-footer>
 
 <ion-content text-center padding [style.background-color]="active ? '#268826' : '#777'">
+	<button ion-button clear (click)="debugModal()">
+		<ion-icon name="bug"></ion-icon>
+	</button>
+
 	<button ion-button clear item-start (click)="connect()" [disabled]="bleConnected" [color]="bleConnected ? 'default' : 'danger'">
 		<ion-icon name="bluetooth"></ion-icon>
 	</button>
-    <ion-grid *ngIf="activeGame">
+    <ion-grid *ngIf="activeMatch">
         <ion-row>
-			<pre>teams: {{activeTeams | json}}</pre>
-			<pre>match: {{activeMatch | json}}</pre>
-			<ion-col text-center col-6><div class="player-score">{{activeGame.score[0]}}</div></ion-col>
-            <ion-col text-center col-6><div class="player-score">{{activeGame.score[1]}}</div></ion-col>
+			{{activeMatch.games[0].standings | json}}
+			<!--<ion-col text-center col-6><div class="player-score">{{activeMatch.score[0]}}</div></ion-col>
+            <ion-col text-center col-6><div class="player-score">{{activeMatch.score[1]}}</div></ion-col>-->
         </ion-row>
         <ion-row>
-            <ion-col text-center col-6>
-                <button ion-button clear item-start (click)="subtractPoint(0)">
+            <ion-col text-center col-6 *ngFor="let team of activeMatch.teams; index as index;">
+                <button ion-button clear item-start (click)="subtractScore(team)">
                     <ion-icon name="remove"></ion-icon>
                 </button>
-                <button ion-button clear item-start (click)="addPoint(0)">
+                <button ion-button clear item-start (click)="addScore(team)">
                     <ion-icon name="add"></ion-icon>
                 </button>
             </ion-col>
-            <ion-col text-center col-6>
-                <ion-col text-center col-6>
-                    <button ion-button clear item-start (click)="subtractPoint(1)">
-                        <ion-icon name="remove"></ion-icon>
-                    </button>
-                    <button ion-button clear item-start (click)="addPoint(1)">
-                        <ion-icon name="add"></ion-icon>
-                    </button>
-                </ion-col>
-            </ion-col>
         </ion-row>
         <ion-row>
-            <ion-col text-center col-6 *ngFor="let team of activeTeams">
+            <ion-col text-center col-6 *ngFor="let team of activeMatch.teams">
 				<div class="player-name">{{team.players[0].displayName}}
 					<button ion-button clear item-start (click)="editPlayer(team.players[0])">
 						<ion-icon name="create"></ion-icon>
@@ -55,8 +48,8 @@
         </ion-row>
         <ion-row>
             <ion-col text-center>
-                <p bottom *ngIf="!activeGame?.endDate">Game started {{activeGame?.startDate | amTimeAgo}}</p>
-                <p *ngIf="activeGame?.endDate">Game ended {{activeGame?.endDate | amTimeAgo}}</p>
+                <p bottom *ngIf="!activeMatch?.endDate">Game started {{activeMatch?.startDate | amTimeAgo}}</p>
+                <p *ngIf="activeMatch?.endDate">Game ended {{activeMatch?.endDate | amTimeAgo}}</p>
             </ion-col>
         </ion-row>
     </ion-grid>

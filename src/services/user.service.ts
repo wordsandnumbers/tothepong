@@ -3,9 +3,7 @@ import {User} from "../types/user";
 import {AngularFireDatabase, FirebaseListObservable} from "angularfire2/database";
 import Thenable = firebase.Thenable;
 import {Observable} from "rxjs/Observable";
-import {mergeMap} from "rxjs/operators";
-import {fromPromise} from "rxjs/observable/fromPromise";
-import {Match} from "../types/match";
+import {map} from "rxjs/operators";
 
 const FIREBASE_USER_PATH: string = "/users";
 
@@ -19,14 +17,18 @@ export class UserService {
 		this.users = db.list(FIREBASE_USER_PATH);
 	}
 
-	public getUserByHidId(cardId: string): Observable<User[]> {
+	public getUserByHidId(cardId: string): Observable<User> {
 		return this.db.list(FIREBASE_USER_PATH, {
 			query: {
 				orderByChild: 'cardId',
 				equalTo: cardId,
 				limitToFirst: 1,
 			}
-		});
+		}).pipe(
+			map((users: Array<User>) => {
+				return users.length > 0 ? users[0] : null;
+			})
+		);
 	}
 
 	public addUser(user: User): Thenable<User> {
@@ -36,15 +38,4 @@ export class UserService {
 	public updateUser(user: User): firebase.Promise<void> {
 		return this.users.update(user.$key, user);
 	}
-
-	public newMatch(user: User, match: Match): Observable<Match> {
-		return fromPromise(
-			this.db.list(FIREBASE_USER_PATH + "/" + user.$key + "/matches").push(match)
-		).pipe(
-			mergeMap((newMatch: Match) => {
-				return this.db.object(FIREBASE_USER_PATH + "/" + user.$key + "/matches/" + newMatch.$key)
-			})
-		);
-	}
-
 }

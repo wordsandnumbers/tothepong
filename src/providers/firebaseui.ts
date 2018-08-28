@@ -15,8 +15,6 @@ export class FirebaseuiProvider {
 	ui: firebaseui.auth.AuthUI;
 
 	constructor() {
-		console.log('Hello FirebaseuiProvider Provider');
-
 		// Initialize the FirebaseUI Widget using Firebase.
 		//this.ui = new firebaseui.auth.AuthUI(firebase.auth());
 	}

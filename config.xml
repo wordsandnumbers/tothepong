@@ -2,7 +2,7 @@
 <widget id="com.collegenet.toThePong" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>To The Pong</name>
     <description>Ping pong for all!</description>
-    <content original-src="index.html" src="http://192.168.1.7:8100" />
+    <content src="index.html" />
     <access origin="*" />
     <allow-navigation href="http://ionic.local/*" />
     <allow-navigation href="http://10.1.4.123:8100" />

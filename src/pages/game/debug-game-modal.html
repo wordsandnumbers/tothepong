@@ -1,0 +1,16 @@
+<ion-header>
+	<ion-toolbar>
+		<ion-title>Debug</ion-title>
+		<ion-buttons start>
+			<button ion-button (click)="dismiss()">
+				<span ion-text color="primary">Close</span>
+				<ion-icon name="md-close" showWhen="android,windows"></ion-icon>
+			</button>
+		</ion-buttons>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+	<pre>teams: {{teams | json}}</pre>
+	<pre>match: {{match | json}}</pre>
+</ion-content>
