@@ -11,24 +11,22 @@ export enum GameState {
 export class Game {
 	startDate: string;
 	endDate: string;
-	pointScores: Array<PointScore>;
+	pointScores: Map<string, Array<PointScore>>;
 	totalPoints: number;
 	state: GameState;
 
 	get standings(): any {
-		let standings = this.pointScores.reduce((totals, pointScore: PointScore) => {
-			if (!totals[pointScore.team.id]) {
-				totals[pointScore.team.id] = 0;
-			}
-			totals[pointScore.team.id] += pointScore.points;
-			return totals;
-		}, {});
+		let standings: object = {};
+
+		this.pointScores.forEach((teamScores: Array<PointScore>, team: string) => {
+			standings[team] = teamScores.length;
+		});
 		return standings;
 	}
 
 	constructor() {
 		this.startDate = new Date().toISOString();
-		this.pointScores = [];
+		this.pointScores = new Map<string, Array<PointScore>>();
 		this.state = GameState.NEW;
 	}
 }

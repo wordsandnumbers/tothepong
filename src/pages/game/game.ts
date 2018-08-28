@@ -140,7 +140,7 @@ export class GamePage implements OnDestroy, OnInit {
 	}
 
 	endMatch(match: Match) {
-		this.activeMatch.state = MatchState.COMPLETE;
+		this.activeMatch.state = MatchState.CANCELLED;
 	}
 
 	newGame() {
@@ -148,8 +148,7 @@ export class GamePage implements OnDestroy, OnInit {
 	}
 
 	endGame() {
-		/*this.games.update(this.activeGame.$key, {endDate: new Date().toISOString()});
-		this.db.object('/game').set({'active': 'false'});*/
+		// TODO: when a game ends, add a new one
 	}
 
 	addScore(team: Team) {

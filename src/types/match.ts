@@ -21,11 +21,17 @@ export class Match {
 	$key?: number;
 
 	addScore(team: Team, pointAmount?: number) {
-		this.games[this.games.length - 1].pointScores.push(new PointScore(team));
+		let currentGame = this.games[this.games.length - 1];
+		let currentGameTeamScores = currentGame.pointScores.get(team.id) || [];
+		currentGameTeamScores.push(new PointScore(team));
+		currentGame.pointScores.set(team.id, currentGameTeamScores);
 	}
 
 	subtractScore(team: Team) {
-		this.games[this.games.length - 1].pointScores.pop();
+		let currentGame = this.games[this.games.length - 1];
+		let currentGameTeamScores = currentGame.pointScores.get(team.id) || [];
+		currentGameTeamScores.pop();
+		currentGame.pointScores.set(team.id, currentGameTeamScores);
 	}
 
 	constructor(totalGames: number, teams: Array<Team>) {
