@@ -3,7 +3,7 @@ import {Team} from "./team";
 import {PointScore} from "./point-score";
 
 export enum MatchState {
-	NEW,
+	NEW = "NEW",
 	ACTIVE = "ACTIVE",
 	COMPLETE = "COMPLETE",
 	CANCELLED = "CANCELLED",
@@ -21,17 +21,17 @@ export class Match {
 	$key?: number;
 
 	addScore(team: Team, pointAmount?: number) {
-		let currentGame = this.games[this.games.length - 1];
-		let currentGameTeamScores = currentGame.pointScores.get(team.id) || [];
-		currentGameTeamScores.push(new PointScore(team));
-		currentGame.pointScores.set(team.id, currentGameTeamScores);
+		this.games[this.games.length - 1].pointScores.push(new PointScore(team));
 	}
 
-	subtractScore(team: Team) {
+	subtractScore(team: Team): void {
 		let currentGame = this.games[this.games.length - 1];
-		let currentGameTeamScores = currentGame.pointScores.get(team.id) || [];
-		currentGameTeamScores.pop();
-		currentGame.pointScores.set(team.id, currentGameTeamScores);
+		let foundIndex = currentGame.pointScores.findIndex((pointScore: PointScore) => {
+			return pointScore.team.id === team.id;
+		});
+		if (foundIndex > -1) {
+			currentGame.pointScores.splice(foundIndex, 1);
+		}
 	}
 
 	constructor(totalGames: number, teams: Array<Team>) {
