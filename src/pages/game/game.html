@@ -23,8 +23,9 @@
 	</button>
     <ion-grid *ngIf="activeMatch">
         <ion-row>
-			{{activeMatch.games[0].standings | json}}
-			<!--<ion-col text-center col-6><div class="player-score">{{activeMatch.score[0]}}</div></ion-col>
+			<div>{{activeMatch.currentGame.score | json}}</div>
+			<div>{{activeMatch.currentGame.winner | json}}</div>
+			<!--<ion-col text-center col-6><div class="player-score">{{activeMatch.gamesscore[0]}}</div></ion-col>
             <ion-col text-center col-6><div class="player-score">{{activeMatch.score[1]}}</div></ion-col>-->
         </ion-row>
         <ion-row>
