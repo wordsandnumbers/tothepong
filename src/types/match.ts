@@ -11,12 +11,12 @@ export enum MatchState {
 }
 
 export class Match {
+	readonly startDate: Date;
 	endDate: Date;
 	location: string;
 	games: Array<Game>;
-	startDate: Date;
 	state: MatchState;
-	teams: Array<Team>;
+	readonly teams: Array<Team>;
 	totalGames: number;
 	$key?: number;
 
