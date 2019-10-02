@@ -1,9 +1,8 @@
 import {Injectable} from '@angular/core';
 import {User} from "../types/user";
 import {AngularFireDatabase, FirebaseListObservable} from "angularfire2/database";
-import Thenable = firebase.Thenable;
 import {Observable} from "rxjs/Observable";
-import {mergeMap, map} from "rxjs/operators";
+import {mergeMap} from "rxjs/operators";
 import {fromPromise} from "rxjs/observable/fromPromise";
 import {Match} from "../types/match";
 
@@ -24,7 +23,7 @@ export class MatchService {
 			this.db.list(FIREBASE_MATCH_PATH + "/" + user.$key).push(match)
 		).pipe(
 			mergeMap((newMatch: Match) => {
-				return this.db.object(FIREBASE_MATCH_PATH + "/" + user.$key + "/" + newMatch.$key)
+				return this.db.object(FIREBASE_MATCH_PATH + "/" + user.$key + "/" + newMatch.$key);
 			})
 		);
 	}

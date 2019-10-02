@@ -51,7 +51,7 @@ export class Game {
 		return !!this.winner;
 	}
 
-	get winner(): TeamScore {
+	get winner(): TeamScore | undefined {
 		let sorted = this.score.sort((a: TeamScore, b: TeamScore) => a.score - b.score);
 		let highTeam = sorted[sorted.length - 1];
 		let nextTeam = sorted[sorted.length - 2];
@@ -59,6 +59,8 @@ export class Game {
 		if (highTeam && nextTeam && highTeam.score >= this.totalPoints && highTeam.score - nextTeam.score >= 2) {
 			return highTeam;
 		}
+
+		return undefined;
 	}
 
 }
