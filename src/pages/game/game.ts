@@ -52,13 +52,13 @@ export class GamePage implements OnDestroy, OnInit {
 								break;
 							case ControllerEventValue.DP:
 							case ControllerEventValue.SP:
-								this.addScore(this.activeMatch.teams[1]);
+								this.addScore(this.activeMatch.teams[0]);
 						}
 						break;
 					case ControllerEventType.B2:
 						switch (event.value) {
 							case ControllerEventValue.LP:
-								this.subtractScore(this.activeMatch.teams[0]);
+								this.subtractScore(this.activeMatch.teams[1]);
 								break;
 							case ControllerEventValue.DP:
 							case ControllerEventValue.SP:

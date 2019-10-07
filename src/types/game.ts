@@ -2,11 +2,11 @@ import {PointScore} from "./point-score";
 import {Team} from "./team";
 
 export enum GameState {
-	NEW,
-	ACTIVE,
-	COMPLETE,
-	CANCELLED,
-	ARCHIVED
+	NEW = "NEW",
+	ACTIVE = "ACTIVE",
+	COMPLETE = "COMPLETE",
+	CANCELLED = "CANCELLED",
+	ARCHIVED = "ARCHIVED"
 }
 
 class TeamScore {
